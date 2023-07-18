@@ -1,10 +1,10 @@
 "use strict";
 const opentelemetry = require("@opentelemetry/api");
+const tracer = opentelemetry.trace.getTracer("my-tracer");
 exports.handler = async (event) => {
 // for local testing
 // const handler = async (event) => {
     const message = "hey girl";
-    const tracer = opentelemetry.trace.getTracer("my-tracer");
     const span = tracer.startSpan("hey girl");
     const response = {
         statusCode: 200,
