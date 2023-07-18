@@ -12,8 +12,8 @@ receivers:
 exporters:
   logging:
     loglevel: debug
-  otlp:
-    endpoint: "api.honeycomb.io:443"
+  otlphttp:
+    endpoint: "https://api.honeycomb.io"
     headers:
       "x-honeycomb-team": "$HONEYCOMB_API_KEY"
 
@@ -21,7 +21,7 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [otlp,logging]
+      exporters: [otlphttp,logging]
     metrics:
       receivers: [otlp]
       exporters: [logging]
