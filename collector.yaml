@@ -1,0 +1,30 @@
+#collector.yaml in the root directory
+#Set an environemnt variable 'OPENTELEMETRY_COLLECTOR_CONFIG_FILE' to '/var/task/collector.yaml'
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "localhost:4317"
+      http:
+        endpoint: "localhost:4318"
+
+exporters:
+  logging:
+  otlp:
+    endpoint: "api.honeycomb.io:443"
+    headers:
+      "x-honeycomb-team": "$HONEYCOMB_API_KEY"
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [otlp,logging]
+    metrics:
+      receivers: [otlp]
+      exporters: [logging]
+  telemetry:
+    metrics:
+      address: localhost:8888
+
