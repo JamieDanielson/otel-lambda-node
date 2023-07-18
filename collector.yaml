@@ -1,5 +1,5 @@
 #collector.yaml in the root directory
-#Set an environemnt variable 'OPENTELEMETRY_COLLECTOR_CONFIG_FILE' to '/var/task/collector.yaml'
+#Set an environment variable 'OPENTELEMETRY_COLLECTOR_CONFIG_FILE' to '/var/task/collector.yaml'
 
 receivers:
   otlp:
@@ -11,6 +11,7 @@ receivers:
 
 exporters:
   logging:
+    loglevel: debug
   otlp:
     endpoint: "api.honeycomb.io:443"
     headers:

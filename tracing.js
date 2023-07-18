@@ -1,33 +1,42 @@
 const process = require('process');
-const { Metadata, credentials } = require('@grpc/grpc-js');
 const { AwsLambdaInstrumentation } = require('@opentelemetry/instrumentation-aws-lambda');
 const { NodeSDK } = require('@opentelemetry/sdk-node');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 const { Resource } = require('@opentelemetry/resources');
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
 const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
+const { Metadata, credentials } = require('@grpc/grpc-js');
+
+// const opentelemetry = require("@opentelemetry/api");
+// const { ConsoleSpanExporter } = require("@opentelemetry/sdk-trace-base");
+
+// opentelemetry.diag.setLogger(
+//   new opentelemetry.DiagConsoleLogger(),
+//   opentelemetry.DiagLogLevel.DEBUG
+// );
 
 // Honeycomb
 const HONEYCOMB_API_KEY = process.env.HONEYCOMB_API_KEY || '';
-const HONEYCOMB_DATASET = process.env.HONEYCOMB_DATASET || '';
-const SERVICE_NAME = process.env.SERVICE_NAME || 'node-year-service';
-const OTLP_ENDPOINT = process.env.HONEYCOMB_API_ENDPOINT || 'grpc://api.honeycomb.io:443/';
+const SERVICE_NAME = process.env.SERVICE_NAME || 'heygirl-lambda';
+const OTEL_EXPORTER_OTLP_ENDPOINT = process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'api.honeycomb.io:443';
 
 const metadata = new Metadata();
 metadata.set('x-honeycomb-team', HONEYCOMB_API_KEY);
-metadata.set('x-honeycomb-dataset', HONEYCOMB_DATASET);
 
 const traceExporter = new OTLPTraceExporter({
-  url: OTLP_ENDPOINT,
+  url: OTEL_EXPORTER_OTLP_ENDPOINT,
   credentials: credentials.createSsl(),
   metadata,
 });
+
+// const consoleExporter = new ConsoleSpanExporter();
 
 const sdk = new NodeSDK({
   resource: new Resource({
     [SemanticResourceAttributes.SERVICE_NAME]: SERVICE_NAME,
   }),
   traceExporter,
+  // traceExporter: consoleExporter,
   instrumentations: [
     getNodeAutoInstrumentations({
       '@opentelemetry/instrumentation-fs': {
